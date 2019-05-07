@@ -7,7 +7,7 @@ The customer side of the application allows the customer to:
 1) view all current items available for purchase, as well as how many are currently in stock and,
 2) purchase items they would like to buy through a series of prompts.
 
-![customer-1](assets/customer-1.jpg)
+![customer-1](assets/customer-1.png)
 
 The manager side of the application is much more in depth as it opens with the following menu:
 -View Products for Sale
