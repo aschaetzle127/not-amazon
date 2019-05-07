@@ -88,7 +88,7 @@ function lowInvent() {
         )
     );
     connection.query(
-        "SELECT id, product_name, department_name, price, stock_quantity FROM products WHERE stock_quantity < 7 ORDER BY stock_quantity DESC",
+        "SELECT id, product_name, department_name, price, stock_quantity FROM products WHERE stock_quantity < 10 ORDER BY stock_quantity DESC",
         function (err, result) {
             if (err) throw err;
             console.table(result);
@@ -126,6 +126,7 @@ function addInvent() {
                     id: input.itemId
                 }], function (err, results) {
                     if (err) throw err;
+                    console.log(chalk.green("Success! \n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"))
                     console.log(chalk.green("Item ID: " + input.itemId + " Updated to: " + (parseInt(currentItem.stock_quantity) + parseInt(input.quantity))));
                 })
 
@@ -135,6 +136,47 @@ function addInvent() {
     })
 }
 
-function addProduct() { }
+function addProduct() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: 'productName',
+            message: "Please enter the name of the product: "
+        }, {
+            type: 'input',
+            name: 'departmentName',
+            message: 'Enter the department: '
+        }, {
+            type: 'input',
+            name: 'departmentID',
+            message: 'Enter the corresponding department ID: '
+        }, {
+            type: 'input',
+            name: 'price',
+            message: 'Enter the price of the item: '
+        }, {
+            type: 'input',
+            name: 'stockQuantity',
+            message: 'Enter the amount of stock: '
+        }
+    ]).then(function (input) {
+        connection.query("INSERT INTO products SET ?",
+            {
+                product_name: input.productName,
+                department_name: input.departmentName,
+                department_id: input.departmentID,
+                price: input.price,
+                stock_quantity: input.stockQuantity
+            },
+            function (err, results) {
+                console.log(chalk.green("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \nSUCCESS!"))
+                console.log(chalk.cyan("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \nThe " + input.productName + " has been added to the " + input.departmentName + " department at a price of $" + input.price + ", with a total of " + input.stockQuantity + " units in stock. \n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"))
+                mgrSelection();
+            })
+    })
+}
 
-function terminate() { }
+function terminate() {
+    console.log(chalk.yellow("OKAY! Have a wonderful day! \nGOODBYE!!"));
+    connection.end();
+}
