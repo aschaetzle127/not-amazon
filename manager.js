@@ -68,7 +68,7 @@ function forSale() {
         )
     );
     connection.query(
-        "SELECT id, product_name, department_name, price, stock_quantity FROM products ORDER BY id DESC",
+        "SELECT id, product_name, department_name, department_id, price, stock_quantity FROM products ORDER BY id DESC",
         function (err, result) {
             if (err) throw err;
             console.table(result);
@@ -88,7 +88,7 @@ function lowInvent() {
         )
     );
     connection.query(
-        "SELECT id, product_name, department_name, price, stock_quantity FROM products WHERE stock_quantity < 10 ORDER BY stock_quantity DESC",
+        "SELECT id, product_name, department_name, department_id, price, stock_quantity FROM products WHERE stock_quantity < 10 ORDER BY stock_quantity DESC",
         function (err, result) {
             if (err) throw err;
             console.table(result);
