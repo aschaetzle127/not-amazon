@@ -58,11 +58,82 @@ function mgrSelection() {
     });
 }
 
-function forSale() { }
+function forSale() {
+    console.log(
+        chalk.blue(
+            "\n" +
+            "Welcome to Your Current Inventory" +
+            "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
+            "\n"
+        )
+    );
+    connection.query(
+        "SELECT id, product_name, department_name, price, stock_quantity FROM products ORDER BY id DESC",
+        function (err, result) {
+            if (err) throw err;
+            console.table(result);
+        }
+    );
+    connection.end();
 
-function lowInvent() { }
+}
 
-function addInvent() { }
+function lowInvent() {
+    console.log(
+        chalk.magenta(
+            "\n" +
+            "Okay! Here are the items that are low in inventory." +
+            "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
+            "\n"
+        )
+    );
+    connection.query(
+        "SELECT id, product_name, department_name, price, stock_quantity FROM products WHERE stock_quantity < 7 ORDER BY stock_quantity DESC",
+        function (err, result) {
+            if (err) throw err;
+            console.table(result);
+        }
+    );
+    connection.end();
+
+}
+
+function addInvent() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "itemId",
+            message: "Please enter the ID of the item you would like to change.",
+        }, {
+            type: "input",
+            name: "quantity",
+            message: "Please enter the amount of inventory you would like to add."
+        }
+    ]).then(function (input) {
+
+        connection.query("SELECT * FROM products WHERE ?", { id: input.itemId }, function (err, results) {
+            if (err) throw err;
+
+            if (results.length === 0) {
+                console.log("That item does not seem to exist, please try again!");
+                addInvent();
+            } else {
+                let currentItem = results[0];
+
+                connection.query("UPDATE products SET ? WHERE ?", [{
+                    stock_quantity: parseInt(currentItem.stock_quantity) + parseInt(input.quantity)
+                }, {
+                    id: input.itemId
+                }], function (err, results) {
+                    if (err) throw err;
+                    console.log(chalk.green("Item ID: " + input.itemId + " Updated to: " + (parseInt(currentItem.stock_quantity) + parseInt(input.quantity))));
+                })
+
+                connection.end();
+            }
+        })
+    })
+}
 
 function addProduct() { }
 
